@@ -60,7 +60,8 @@ class Docs extends CI_Controller{
 					
 					preg_match_all('/function (?P<method_name>[^_]\w+)\s{0,}\(/', $api_str, $method_list);
 					foreach($method_list['method_name'] as $method_value){
-						array_push($controller_arr[$controller_name], preg_replace('/_(get|post|put|delete)$/', '', $method_value));
+						// array_push($controller_arr[$controller_name], preg_replace('/_(get|post|put|delete)$/', '', $method_value));
+						array_push($controller_arr[$controller_name], str_replace('_','-',$method_value));
 					}
 				}
 			}
@@ -95,9 +96,11 @@ class Docs extends CI_Controller{
 				/* Check use Codeigniter_restserver */ 
 				$rest_method_pattern = '/_(get|post|put|delete)$/';
 				$api_method_name = $api_method['method_name'];
+				$api_method_label = $api_method['method_name'];
 				$call_type = null;
 				if (preg_match($rest_method_pattern, $api_method['method_name'], $rest_method_parameter)){
 					$api_method_name = preg_replace($rest_method_pattern, '', $api_method['method_name']);
+					$api_method_label = str_replace('_', '-', $api_method['method_name']);
 					$call_type = strtoupper($rest_method_parameter[1]);
 				}
 				else{
@@ -105,6 +108,7 @@ class Docs extends CI_Controller{
 				}
 
 				array_push($api_list, array(
+					'method_label' => $api_method_label,
 					'method_name' => $api_method_name,
 					'url_parameter' => $api_url_parameter[1],
 					'parameter' => $api_paramter[2],
